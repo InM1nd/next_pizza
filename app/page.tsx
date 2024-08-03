@@ -19,7 +19,7 @@ export default function Home() {
             <Filters/>
           </div>
           
-          {/* List of Products Pizza */}
+          {/* List of Products */}
           <div className="flex-1">
             <div className="flex flex-col gap-16">
               <ProductsGroupList 
