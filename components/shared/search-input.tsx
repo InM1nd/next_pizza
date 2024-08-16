@@ -6,7 +6,7 @@ import { Product } from '@prisma/client';
 import { Search } from 'lucide-react';
 import Link from 'next/link';
 import React, { useRef } from 'react'
-import { useClickAway } from 'react-use';
+import { useClickAway, useDebounce } from 'react-use';
 
 interface Props {
   className?: string;
@@ -22,11 +22,20 @@ export const SearchInput: React.FC<Props> = ({className}) => {
     setFocused(false);
   });
 
-  React.useEffect(() => {
+  useDebounce(() => {
     Api.products.search(searchQuery).then(items => {
       setProducts(items);
     });
-  }, [searchQuery])
+  }, 
+    250, 
+    [searchQuery]
+  )
+
+  const onClickItem = () => {
+    setFocused(false);
+    setSearchQuery('');
+    setProducts([]);
+  }
 
   return (
     <>
@@ -43,7 +52,7 @@ export const SearchInput: React.FC<Props> = ({className}) => {
           onChange={(e) => setSearchQuery(e.target.value)}
         />
 
-        <div className={cn(
+        {products.length > 0 && (<div className={cn(
           'absolute w-full bg-white rounded-xl py-2 top-14 shadow-md transition-all duration-200 invisible opacity-0 z-30', 
           focused && 'visible opacity-100 top-12'
         )}>
@@ -51,7 +60,8 @@ export const SearchInput: React.FC<Props> = ({className}) => {
             <Link 
             key={product.id}
             className='flex items-center gap-3 w-full px-3 py-2 hover:bg-primary/10 cursor-pointer' 
-            href={`/products/${product.id}`}
+            href={`/product/${product.id}`}
+            onClick={onClickItem}
             >
               <img 
                 className='rounded-sm h-8 w-8' 
@@ -63,7 +73,7 @@ export const SearchInput: React.FC<Props> = ({className}) => {
               </span>
             </Link>
           ))}
-        </div>
+        </div>)}
       </div>
     </>
   )

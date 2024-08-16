@@ -15,5 +15,5 @@ export async function GET(req: NextRequest) {
     
   })
 
-  return NextResponse.json({products});
+  return NextResponse.json(products);
 }
